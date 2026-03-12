@@ -13,8 +13,8 @@ print("Type of monthly_deposit:", type(monthly_deposit))
 print("Type of years:", type(years))
 
 # # Task 3: Calculate total investment
-# total_investment = monthly_deposit * 12 * years
-# print("\nTotal Investment:", total_investment)
+total_investment = monthly_deposit * 12 * years
+print("\nTotal Investment:", total_investment)
 
 # # Task 4: Display formatted investment report
 # print("\n----- Investment Report -----")
