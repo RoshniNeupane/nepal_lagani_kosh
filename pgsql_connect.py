@@ -1,37 +1,25 @@
-import psycopg2
+# investment_app.py
+from db_connection import get_connection
 
-# 1️⃣ Connect to DB
-conn = psycopg2.connect(
-    dbname="Python_Training",
-    user="postgres",
-    password="Rosh@ni12",
-    host="localhost",
-    port="5432"
-)
+conn = get_connection()
+if not conn:
+    print("Cannot continue without DB connection. Exiting...")
+    exit()
+
 cur = conn.cursor()
 
-# 2️⃣ Create table if it doesn’t exist
+# Create table if not exists
 cur.execute("""
-            CREATE TABLE IF NOT EXISTS investments
-            (
-                id
-                SERIAL
-                PRIMARY
-                KEY,
-                investor_name
-                VARCHAR
-            (
-                100
-            ),
-                monthly_deposit NUMERIC,
-                years INT,
-                total_investment NUMERIC
-                );
-            """)
+    CREATE TABLE IF NOT EXISTS investments (
+        id SERIAL PRIMARY KEY,
+        investor_name VARCHAR(100),
+        monthly_deposit NUMERIC,
+        years INT,
+        total_investment NUMERIC
+    );
+""")
 conn.commit()
-print("Table 'investments' is ready!\n")
 
-# 3️⃣ Menu loop
 while True:
     print("\n----- Investment Menu -----")
     print("1. Add new investment")
@@ -59,8 +47,6 @@ while True:
     elif choice == "2":
         # Update
         update_id = int(input("Enter ID to update: "))
-
-        # Check if ID exists
         cur.execute("SELECT * FROM investments WHERE id=%s", (update_id,))
         record = cur.fetchone()
 
@@ -70,7 +56,6 @@ while True:
             new_deposit_input = input("Enter new monthly deposit (leave blank to keep same): ")
             new_years_input = input("Enter new number of years (leave blank to keep same): ")
 
-            # Keep old values if input is blank
             new_name = new_name if new_name.strip() else record[1]
             new_deposit = float(new_deposit_input) if new_deposit_input.strip() else float(record[2])
             new_years = int(new_years_input) if new_years_input.strip() else int(record[3])
@@ -88,8 +73,6 @@ while True:
     elif choice == "3":
         # Delete
         delete_id = int(input("Enter ID to delete: "))
-
-        # Check if ID exists
         cur.execute("SELECT * FROM investments WHERE id=%s", (delete_id,))
         record = cur.fetchone()
 
